@@ -1,0 +1,9 @@
+/.vscode
+/build
+/cmake-build-debug
+/CMakeFiles
+/Testing
+/CMakeCache.txt
+/cmake_install.cmake
+/main.cbp
+/Makefile
