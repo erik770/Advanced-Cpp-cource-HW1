@@ -1,6 +1,8 @@
 name: CI
 on: [ push ]
 
+language: c
+compiler: gcc
 jobs:
   build:
 
