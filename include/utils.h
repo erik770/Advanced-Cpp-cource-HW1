@@ -11,7 +11,7 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 
-#define STARTING_BUFFER_SIZE 1
+#define STARTING_BUFFER_SIZE 2
 #define BUFFER_INCREASE_COEFF 2
 
 typedef struct Storage {
@@ -45,6 +45,7 @@ int read_storage_info(Storage *storage);
 
 int scan_bool(bool *boolean);
 
+int display_suitable(size_t required_capacity, Storages *storages);
 int display_suitable(size_t required_capacity, Storages *storages);
 
 #if defined(__cplusplus)

@@ -1,6 +1,8 @@
 #include "run.h"
 
 int main() {
-    run();
+    if (run() != 0) {
+        return -1;
+    }
     return 0;
 }

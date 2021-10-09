@@ -60,7 +60,7 @@ Storage *create_storage(size_t number, char *type, size_t capacity, bool re_reco
     }
 
 //    strcpy(storage->type, type);
-    if (snprintf(storage->type, sizeof(storage->type), "%9s", type) < 0) {
+    if (snprintf(storage->type, 10 * sizeof(char), "%s", type) < 0) {
         delete_storage(storage);
         return NULL;
     }
@@ -138,7 +138,7 @@ int increase_array(Storages *array_of_storages) {
     }
 
     array_of_storages->buffer = realloc(array_of_storages->buffer,
-                            sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
+                               sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
     if (array_of_storages->buffer == NULL) {
         delete_storage(array_of_storages->buffer);
         delete_array_of_storages(array_of_storages);

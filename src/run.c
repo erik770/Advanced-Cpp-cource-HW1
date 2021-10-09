@@ -10,7 +10,7 @@ int run() {
     while (ans) {
         Storage *storage = create_storage_from_terminal();
         if (storage == NULL) {
-            delete_array_of_storages(storages);
+     c       delete_array_of_storages(storages);
             return -1;
         }
 
