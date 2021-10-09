@@ -59,7 +59,11 @@ Storage *create_storage(size_t number, char *type, size_t capacity, bool re_reco
         return NULL;
     }
 
-    strcpy(storage->type, type);
+//    strcpy(storage->type, type);
+    if (snprintf(storage->type, sizeof(storage->type), "%9s", type) < 0) {
+        delete_storage(storage);
+        return NULL;
+    }
     storage->number = number;
     storage->capacity = capacity;
     storage->re_recordable = re_recordable;
@@ -134,7 +138,7 @@ int increase_array(Storages *array_of_storages) {
     }
 
     array_of_storages->buffer = realloc(array_of_storages->buffer,
-                                        sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
+                            sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
     if (array_of_storages->buffer == NULL) {
         delete_storage(array_of_storages->buffer);
         delete_array_of_storages(array_of_storages);

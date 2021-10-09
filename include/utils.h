@@ -1,5 +1,5 @@
-#ifndef PROJECT_INCLUDE_UTILS_H_
-#define PROJECT_INCLUDE_UTILS_H_
+#ifndef INCLUDE_UTILS_H_
+#define INCLUDE_UTILS_H_
 
 #if defined(__cplusplus)
 extern "C" {
@@ -51,4 +51,4 @@ int display_suitable(size_t required_capacity, Storages *storages);
 }
 #endif
 
-#endif //  PROJECT_INCLUDE_UTILS_H_
+#endif  //  INCLUDE_UTILS_H_
