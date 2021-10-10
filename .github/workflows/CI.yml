@@ -1,0 +1,44 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ making_hw1 ]
+  pull_request:
+    branches:
+     -making_hw1
+     - main
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: install references
+        run: sudo apt-get install libgtest-dev -y && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && cd lib && sudo cp *.a /usr/lib && sudo apt-get install -y cppcheck && sudo apt-get install valgrind && sudo apt-get install -y lcov && sudo apt-get install -y gcovr
+
+      - name: build
+        run: mkdir build && cd build && cmake .. && make
+
+      - name: static analys and linters
+        run: ./linters/run.sh build/IW_1 build/gtests && cppcheck -q --enable=all --inconclusive --platform=unix64 --suppress=missingIncludeSystem ./src ./include ./gtests
+
+      - name: tests
+        run: ./build/gtests && lcov -t "IW_1" -o coverage.txt -c -d . && cp coverage.txt ../
+
+      - name: valgrind
+        run: valgrind --tool=memcheck --leak-check=full -s ./build/gtests
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.txt
+          flags: unittests
