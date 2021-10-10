@@ -31,10 +31,10 @@ jobs:
         run: ./linters/run.sh build/IW_1 build/gtests && cppcheck -q --enable=all --inconclusive --platform=unix64 --suppress=missingIncludeSystem ./src ./include ./gtests
 
       - name: tests
-        run: ./build/gtests && lcov -t "IW_1" -o coverage.txt -c -d . && cp coverage.txt ../
+        run: ./build/gtests && ./build/IW1 
 
       - name: valgrind
         run: valgrind --tool=memcheck --leak-check=full -s ./build/gtests
 
       - name: code coverage
-        run: gcovr -r ..
+        run: gcovr -r .
