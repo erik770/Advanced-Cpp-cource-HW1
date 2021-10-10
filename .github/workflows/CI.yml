@@ -31,7 +31,7 @@ jobs:
         run: ./linters/run.sh build/IW_1 build/gtests && cppcheck -q --enable=all --inconclusive --platform=unix64 --suppress=missingIncludeSystem ./src ./include ./gtests
 
       - name: tests
-        run: ./build/gtests && ./build/IW1 
+        run: ./build/gtests && ./build/IW_1 
 
       - name: valgrind
         run: valgrind --tool=memcheck --leak-check=full -s ./build/gtests
