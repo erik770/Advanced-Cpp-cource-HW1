@@ -25,20 +25,17 @@ int read_storage_info(Storage *storage) {
     }
 
     printf("Enter serial number: ");
-    char input[15];
+    char input[INPUT_BUFFER_SIZE];
     scanf("%14s", input);
     storage->number = strtoul(input, NULL, 10);
-//    printf("%s%zu\n", "serial number is: ", storage->number);
 
     printf("Enter the type of storage: ");
     scanf("%15s", storage->type);
-//    printf("%s%s\n", "type is: ", storage->type);
 
     printf("Enter the capacity: ");
-    char input2[10];
-    scanf("%9s", input2);
+    char input2[INPUT_BUFFER_SIZE];
+    scanf("%14s", input2);
     storage->capacity = strtoul(input2, NULL, 10);
-//    printf("%s%zu\n", "capacity is: ", storage->capacity);
 
     printf("Is the storage re-recordable (y/n): ");
     if (scan_bool(&storage->re_recordable) != 0) {
@@ -53,14 +50,13 @@ Storage *create_storage(size_t number, char *type, size_t capacity, bool re_reco
     if (storage == NULL) {
         return NULL;
     }
-    storage->type = calloc(10, sizeof(char));
+    storage->type = calloc(TYPE_SIZE, sizeof(char));
     if (storage->type == NULL) {
         free(storage);
         return NULL;
     }
 
-//    strcpy(storage->type, type);
-    if (snprintf(storage->type, 10 * sizeof(char), "%s", type) < 0) {
+    if (snprintf(storage->type, TYPE_SIZE * sizeof(char), "%s", type) < 0) {
         delete_storage(storage);
         return NULL;
     }
@@ -77,7 +73,7 @@ Storage *create_storage_from_terminal() {
     if (storage == NULL) {
         return NULL;
     }
-    storage->type = calloc(10, sizeof(char));
+    storage->type = calloc(TYPE_SIZE, sizeof(char));
     if (storage->type == NULL) {
         free(storage);
         return NULL;
@@ -138,7 +134,7 @@ int increase_array(Storages *array_of_storages) {
     }
 
     array_of_storages->buffer = realloc(array_of_storages->buffer,
-                               sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
+                         sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
     if (array_of_storages->buffer == NULL) {
         delete_storage(array_of_storages->buffer);
         delete_array_of_storages(array_of_storages);

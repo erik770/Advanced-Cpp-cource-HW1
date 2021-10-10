@@ -28,8 +28,8 @@ int run() {
     }
 
     printf("how much capacity do you need? : ");
-    char input[10];
-    scanf("%9s", input);
+    char input[INPUT_BUFFER_SIZE];
+    scanf("%14s", input);
     size_t required_capacity = strtoul(input, NULL, 10);
     if (display_suitable(required_capacity, storages) != 0) {
         delete_array_of_storages(storages);

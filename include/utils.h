@@ -11,6 +11,8 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 
+#define INPUT_BUFFER_SIZE 15
+#define TYPE_SIZE 10
 #define STARTING_BUFFER_SIZE 2
 #define BUFFER_INCREASE_COEFF 2
 
@@ -46,6 +48,7 @@ int read_storage_info(Storage *storage);
 int scan_bool(bool *boolean);
 
 int display_suitable(size_t required_capacity, Storages *storages);
+
 int display_suitable(size_t required_capacity, Storages *storages);
 
 #if defined(__cplusplus)
