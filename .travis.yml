@@ -2,34 +2,38 @@ name: CI
 on: [ push ]
 
 language: c
-compiler: gcc
-jobs:
-  build:
+dist: trusty
 
-    name: ubuntu
-    runs-on: ubuntu-latest
+before_script:
+  - mkdir build
+  - cd build
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      mkdir -p external/cmake
+      pushd external/cmake
+      wget https://cmake.org/files/v3.8/cmake-3.8.0-Linux-x86_64.sh
+      chmod +x cmake-*-Linux-x86_64.sh
+      ./cmake-*-Linux-x86_64.sh --exclude-subdir --skip-license
+      export PATH="${PWD}/bin:$PATH"
+      popd
+    else
+      if ! brew ls --version cmake &>/dev/null; then brew update; brew install cmake; fi
+    fi
 
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: install references
-        run: sudo apt-get install libgtest-dev -y && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && cd lib && sudo cp *.a /usr/lib && sudo apt-get install -y cppcheck && sudo apt-get install valgrind && sudo apt-get install -y lcov && sudo apt-get install -y gcovr
-
-      - name: build
-        run: mkdir build && cd build && cmake .. && make
-
-      - name: static analys and linters
-        run: ./linters/run.sh build/IW_1 build/gtests && cppcheck -q --enable=all --inconclusive --platform=unix64 --suppress=missingIncludeSystem ./project ./gtests
-
-      - name: tests
-        run: ./build/gtests && lcov -t "IW_1" -o coverage.txt -c -d . && cp coverage.txt ../
-
-      - name: valgrind
-        run: valgrind --tool=memcheck --leak-check=full -s ./build/gtests
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.txt
-          flags: unittests
+matrix:
+  include:
+    - os: linux
+      env:
+        - TEST="CppCheck"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+      script:
+        - cmake -DENABLE_CPPCHECK=ON -DCMAKE_CXX_COMPILER="g++-6" ..
+        - make
+        #- make check
+        - ./linters/run.sh build/IW_1 build/tests && cppcheck -q --enable=all --inconclusive --platform=unix64 --suppress=missingIncludeSystem ./src ./include ./tests
