@@ -27,7 +27,7 @@ jobs:
       - name: build
         run: mkdir build && cd build && cmake .. && make
 
-      - name: static analys and linters
+      - name: static analysis and linters
         run: ./linters/run.sh build/IW_1 build/gtests && cppcheck -q --enable=all --inconclusive --platform=unix64 --suppress=missingIncludeSystem ./src ./include ./gtests
 
       - name: tests
@@ -36,9 +36,5 @@ jobs:
       - name: valgrind
         run: valgrind --tool=memcheck --leak-check=full -s ./build/gtests
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.txt
-          flags: unittests
+      - name: code coverage
+        run: gcovr -r ..
