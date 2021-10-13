@@ -14,7 +14,7 @@ add_library(utils STATIC ${SOURCES})
 target_include_directories(utils PUBLIC include)
 
 
-add_executable(IW_1 src/main.c src/run.c)
+add_executable(IW_1 src/main.c)
 target_link_libraries(IW_1 utils gcov)
 
 enable_testing()

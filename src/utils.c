@@ -1,25 +1,25 @@
-#include "../include/utils.h"
+#include "utils.h"
 
 int scan_bool(bool *boolean) {
-    char *tmp = malloc(2 * sizeof(char));
-    scanf("%2s", tmp);
-    if (*tmp == 'y') {
-        free(tmp);
-        *boolean = true;
-        return 0;
-    } else {
-        if (*tmp == 'n') {
-            free(tmp);
-            *boolean = false;
-            return 0;
-        } else {
-            free(tmp);
-            return -1;
-        }
+    if (boolean == NULL) {
+        return -1;
     }
+
+    char tmp[2];
+    scanf("%1s", tmp);
+
+    if (*tmp != 'y' && *tmp != 'n') {
+        return -1;
+    }
+    if (*tmp == 'n') {
+        *boolean = false;
+        return 0;
+    }
+    *boolean = true;
+    return 0;
 }
 
-int read_storage_info(Storage *storage) {
+int read_storage_info(storage_t *storage) {
     if (storage == NULL) {
         return -1;
     }
@@ -45,8 +45,12 @@ int read_storage_info(Storage *storage) {
     return 0;
 }
 
-Storage *create_storage(size_t number, char *type, size_t capacity, bool re_recordable) {
-    Storage *storage = calloc(1, sizeof(Storage));
+storage_t *create_storage(size_t number, const char *type,  size_t capacity, bool re_recordable) {
+    if (type == NULL) {
+        return NULL;
+    }
+
+    storage_t *storage = calloc(1, sizeof(storage_t));
     if (storage == NULL) {
         return NULL;
     }
@@ -68,8 +72,8 @@ Storage *create_storage(size_t number, char *type, size_t capacity, bool re_reco
 }
 
 
-Storage *create_storage_from_terminal() {
-    Storage *storage = calloc(1, sizeof(Storage));
+storage_t *create_storage_from_terminal() {
+    storage_t *storage = calloc(1, sizeof(storage_t));
     if (storage == NULL) {
         return NULL;
     }
@@ -87,7 +91,7 @@ Storage *create_storage_from_terminal() {
     return storage;
 }
 
-int delete_storage(Storage *storage) {
+int delete_storage(storage_t *storage) {
     if (storage == NULL) {
         return -1;
     }
@@ -96,12 +100,12 @@ int delete_storage(Storage *storage) {
     return 0;
 }
 
-Storages *create_array_of_storages() {
-    Storages *array_of_storages = calloc(1, sizeof(Storages));
+storages_t *create_array_of_storages() {
+    storages_t *array_of_storages = calloc(1, sizeof(storages_t));
     if (array_of_storages == NULL) {
         return NULL;
     }
-    array_of_storages->buffer = calloc(STARTING_BUFFER_SIZE, sizeof(Storage));
+    array_of_storages->buffer = calloc(STARTING_BUFFER_SIZE, sizeof(storage_t));
     if (array_of_storages->buffer == NULL) {
         free(array_of_storages);
         return NULL;
@@ -112,7 +116,7 @@ Storages *create_array_of_storages() {
     return array_of_storages;
 }
 
-int delete_array_of_storages(Storages *array_of_storages) {
+int delete_array_of_storages(storages_t *array_of_storages) {
     if (array_of_storages == NULL) {
         return -1;
     }
@@ -128,13 +132,13 @@ int delete_array_of_storages(Storages *array_of_storages) {
     return 0;
 }
 
-int increase_array(Storages *array_of_storages) {
+int increase_array(storages_t *array_of_storages) {
     if (array_of_storages == NULL) {
         return -1;
     }
 
     array_of_storages->buffer = realloc(array_of_storages->buffer,
-                         sizeof(Storage) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
+                           sizeof(storage_t) * array_of_storages->number_of_cells * BUFFER_INCREASE_COEFF);
     if (array_of_storages->buffer == NULL) {
         delete_storage(array_of_storages->buffer);
         delete_array_of_storages(array_of_storages);
@@ -146,13 +150,16 @@ int increase_array(Storages *array_of_storages) {
     return 0;
 }
 
-int add_storage_to_array(Storage *storage, Storages *array_of_storages) {
+int add_storage_to_array(storage_t *storage, storages_t *array_of_storages) {
     if (storage == NULL || array_of_storages == NULL) {
         return -1;
     }
 
     if (array_of_storages->number_of_cells == array_of_storages->number_of_storages) {
-        increase_array(array_of_storages);
+        if (increase_array(array_of_storages) !=0) {
+            free(storage);
+            return -1;
+        }
     }
 
     array_of_storages->buffer[array_of_storages->number_of_storages] = *storage;
@@ -161,7 +168,7 @@ int add_storage_to_array(Storage *storage, Storages *array_of_storages) {
     return 0;
 }
 
-int display_suitable(size_t required_capacity, Storages *storages) {
+int display_suitable(size_t required_capacity, const storages_t *storages) {
     if (storages == NULL) {
         return -1;
     }
